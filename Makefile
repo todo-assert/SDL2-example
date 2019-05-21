@@ -11,7 +11,8 @@ VPATH =
 
 EXAMPLE_DIR = ${shell pwd}
 
-MAINSRC = main.c
+MAINSRC = main.c \
+	  monitor.c
 
 
 OBJEXT ?= .o
