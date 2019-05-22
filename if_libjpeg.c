@@ -51,7 +51,7 @@ int main_decompress(char *filename)
 	// monitor_flush_without_alpha(0, 0, cinfo.output_width-1, cinfo.output_scanline-1, &buffer[0]);
 	
 	uint8_t *full_screen = NULL;
-	bool direction = cinfo.output_width > cinfo.output_height ? (monitor_hor_pixel() > monitor_ver_pixel()) : (monitor_hor_pixel() < monitor_ver_pixel());
+	bool direction = cinfo.output_width > cinfo.output_height ? (monitor_hor_pixel() >= monitor_ver_pixel()) : (monitor_hor_pixel() <= monitor_ver_pixel());
 	if( direction ) {
 		scaler_init(cinfo.output_width, cinfo.output_height, monitor_hor_pixel(), monitor_ver_pixel());
 	} else {
