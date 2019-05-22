@@ -20,6 +20,7 @@ MAINSRC = main.c \
 	  
 MAINSRC += if_libjpeg.c
 MAINSRC += scaler.c
+MAINSRC += file.c
 
 OBJEXT ?= .o
 
