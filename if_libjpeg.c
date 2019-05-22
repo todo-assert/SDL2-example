@@ -26,9 +26,9 @@ int main_decompress(char *filename)
     jpeg_stdio_src(&cinfo, infile);
 
     jpeg_read_header(&cinfo, TRUE);
-    printf("image_width = %d\n", cinfo.image_width);
-    printf("image_height = %d\n", cinfo.image_height);
-    printf("num_components = %d\n", cinfo.num_components);
+    // printf("image_width = %d\n", cinfo.image_width);
+    // printf("image_height = %d\n", cinfo.image_height);
+    // printf("num_components = %d\n", cinfo.num_components);
 
     // printf("enter scale M/N:\n");
     // scanf("%d/%d", &cinfo.scale_num, &cinfo.scale_denom);
@@ -36,9 +36,9 @@ int main_decompress(char *filename)
 	
     jpeg_start_decompress(&cinfo);
 
-    printf("output_width = %d\n", cinfo.output_width);
-    printf("output_height = %d\n", cinfo.output_height);
-    printf("output_components = %d\n", cinfo.output_components);
+    // printf("output_width = %d\n", cinfo.output_width);
+    // printf("output_height = %d\n", cinfo.output_height);
+    // printf("output_components = %d\n", cinfo.output_components);
 
     full_stride = cinfo.output_width * cinfo.output_height * cinfo.output_components;
     buffer = malloc(full_stride);
@@ -69,6 +69,7 @@ int main_decompress(char *filename)
     free(buffer);
     jpeg_finish_decompress(&cinfo);
     jpeg_destroy_decompress(&cinfo);
-
+	fclose(infile);
+	
     return 0;
 }
