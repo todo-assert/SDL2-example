@@ -5,7 +5,11 @@ CC = gcc
 CFLAGS = -Wall -Wshadow -Wundef -Wmaybe-uninitialized -fbounds-check
 
 CFLAGS += -O3 -g3 -I./
+# CFLAGS += -I../libjpeg/include/
+LDFLAGS :=
 LDFLAGS += -lSDL2 -lm
+# LDFLAGS += -L../libjpeg/lib/ -ljpeg
+LDFLAGS += -ljpeg
 BIN = demo
 VPATH = 
 
@@ -13,7 +17,8 @@ EXAMPLE_DIR = ${shell pwd}
 
 MAINSRC = main.c \
 	  monitor.c
-
+	  
+MAINSRC += if_libjpeg.c
 
 OBJEXT ?= .o
 

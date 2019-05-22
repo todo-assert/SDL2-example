@@ -119,6 +119,41 @@ void monitor_flush(int32_t x1, int32_t y1, int32_t x2, int32_t y2, const uint32_
     monitor_flush_ready();
 }
 
+/**
+ * Flush a buffer to the display. Calls 'monitor_flush_ready()' when finished
+ * @param x1 left coordinate
+ * @param y1 top coordinate
+ * @param x2 right coordinate
+ * @param y2 bottom coordinate
+ * @param color_p array of colors to be flushed
+ */
+void monitor_flush_without_alpha(int32_t x1, int32_t y1, int32_t x2, int32_t y2, const uint8_t * color_p)
+{
+    /*Return if the area is out the screen*/
+    if(x2 < 0 || y2 < 0 || x1 > monitor_data->hor_pixel - 1 || y1 > MONITOR_VER_RES - 1) {
+        monitor_flush_ready();
+        return;
+    }
+
+    int32_t y;
+	uint8_t *pixel;
+    uint32_t w = x2 - x1 + 1;
+    for(y = y1; y <= y2; y++) {
+		for(int i=0;i<w;i++) {
+			pixel = (uint8_t *)&monitor_data->framebuffer[y * monitor_data->hor_pixel + x1];
+			pixel[4*i + 3] = 0xff; 
+			pixel[4*i + 2] = color_p[3*i + 0]; 
+			pixel[4*i + 1] = color_p[3*i + 1]; 
+			pixel[4*i + 0] = color_p[3*i + 2]; 
+		}	
+        color_p += w;
+    }
+
+    sdl_refr_qry = true;
+
+    /*IMPORTANT! It must be called to tell the system the flush is ready*/
+    monitor_flush_ready();
+}
 
 /**
  * Fill out the marked area with a color
