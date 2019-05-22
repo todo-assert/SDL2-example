@@ -11,7 +11,7 @@ typedef struct {
 }scaler_private_t;
 
 bool scaler_init(uint32_t actual_width, uint32_t actual_height, uint32_t virtual_width, uint32_t virtual_height);
-bool scaler_process(uint8_t *source, uint8_t **target, uint8_t components);
+bool scaler_process(uint8_t *source, uint8_t **target, uint8_t components, bool direction);
 bool scaler_destroy(void);
 
 #endif /* __SCALER_H */

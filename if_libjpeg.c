@@ -51,9 +51,18 @@ int main_decompress(char *filename)
 	// monitor_flush_without_alpha(0, 0, cinfo.output_width-1, cinfo.output_scanline-1, &buffer[0]);
 	
 	uint8_t *full_screen = NULL;
-	scaler_init(cinfo.output_width, cinfo.output_height, monitor_hor_pixel(), monitor_ver_pixel());
-	scaler_process(buffer, &full_screen, cinfo.output_components);
-	monitor_flush_without_alpha(0, 0, monitor_hor_pixel()-1, monitor_ver_pixel()-1, &full_screen[0]);
+	bool direction = cinfo.output_width > cinfo.output_height ? (monitor_hor_pixel() > monitor_ver_pixel()) : (monitor_hor_pixel() < monitor_ver_pixel());
+	if( direction ) {
+		scaler_init(cinfo.output_width, cinfo.output_height, monitor_hor_pixel(), monitor_ver_pixel());
+	} else {
+		scaler_init(cinfo.output_width, cinfo.output_height, monitor_ver_pixel(), monitor_hor_pixel());
+	}
+	scaler_process(buffer, &full_screen, cinfo.output_components, direction);
+	if( cinfo.output_components == 4 ) {
+		monitor_flush(0, 0, monitor_hor_pixel()-1, monitor_ver_pixel()-1, (const uint32_t *)&full_screen[0]);
+	} else if( cinfo.output_components == 3 ) {
+		monitor_flush_without_alpha(0, 0, monitor_hor_pixel()-1, monitor_ver_pixel()-1, &full_screen[0], 0xff);
+	}
 	scaler_destroy();
 
     free(full_screen);

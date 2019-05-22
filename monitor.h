@@ -39,7 +39,7 @@ bool monitor_init(uint32_t width, uint32_t height, char *name);
 void monitor_flush(int32_t x1, int32_t y1, int32_t x2, int32_t y2, const uint32_t *color_p);
 void monitor_fill(int32_t x1, int32_t y1, int32_t x2, int32_t y2, uint32_t color);
 void monitor_map(int32_t x1, int32_t y1, int32_t x2, int32_t y2, const uint32_t * color_p);
-void monitor_flush_without_alpha(int32_t x1, int32_t y1, int32_t x2, int32_t y2, const uint8_t * color_p);
+void monitor_flush_without_alpha(int32_t x1, int32_t y1, int32_t x2, int32_t y2, const uint8_t * color_p, uint8_t alpha);
 uint32_t monitor_hor_pixel(void);
 uint32_t monitor_ver_pixel(void);
 

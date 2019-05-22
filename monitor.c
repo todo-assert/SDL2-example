@@ -127,7 +127,7 @@ void monitor_flush(int32_t x1, int32_t y1, int32_t x2, int32_t y2, const uint32_
  * @param y2 bottom coordinate
  * @param color_p array of colors to be flushed
  */
-void monitor_flush_without_alpha(int32_t x1, int32_t y1, int32_t x2, int32_t y2, const uint8_t * color_p)
+void monitor_flush_without_alpha(int32_t x1, int32_t y1, int32_t x2, int32_t y2, const uint8_t * color_p, uint8_t alpha)
 {
     /*Return if the area is out the screen*/
     if(x2 < 0 || y2 < 0 || x1 > monitor_data->hor_pixel - 1 || y1 > monitor_data->ver_pixel - 1) {
@@ -141,7 +141,7 @@ void monitor_flush_without_alpha(int32_t x1, int32_t y1, int32_t x2, int32_t y2,
     for(y = y1; y <= y2; y++) {
 		for(int i=0;i<w;i++) {
 			pixel = (uint8_t *)&monitor_data->framebuffer[y * monitor_data->hor_pixel + x1];
-			pixel[4*i + 3] = 0xff; 
+			pixel[4*i + 3] = alpha; 
 			pixel[4*i + 2] = color_p[3*i + 0]; 
 			pixel[4*i + 1] = color_p[3*i + 1]; 
 			pixel[4*i + 0] = color_p[3*i + 2]; 

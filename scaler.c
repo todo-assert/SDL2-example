@@ -45,7 +45,7 @@ bool scaler_init(uint32_t actual_width, uint32_t actual_height, uint32_t virtual
 		} \
 	}while(0)
 
-bool scaler_process(uint8_t *source, uint8_t **target, uint8_t components)
+bool scaler_process(uint8_t *source, uint8_t **target, uint8_t components, bool direction)
 {
 	CHECK_PRIVATE();
 	if( source == NULL ) {
@@ -58,7 +58,11 @@ bool scaler_process(uint8_t *source, uint8_t **target, uint8_t components)
 	for(int h=0;h<scaler->virtual_height;h++) {
 		for(int w=0;w<scaler->virtual_width;w++) {
 			for(int i=0;i<components;i++) {
-				(*target)[(h*scaler->virtual_width+w)*components + i] = source[(scaler->map_column[h] * scaler->actual_width  + scaler->map_row[w])*components + i];
+				if( direction ) {
+					(*target)[(h*scaler->virtual_width+w)*components + i] = source[(scaler->map_column[h] * scaler->actual_width  + scaler->map_row[w])*components + i];
+				} else {
+					(*target)[(w*scaler->virtual_height+h)*components + i] = source[(scaler->map_column[h] * scaler->actual_width  + scaler->map_row[w])*components + i];
+				}
 			}
 		}
 	}
