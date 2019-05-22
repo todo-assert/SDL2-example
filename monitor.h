@@ -16,13 +16,6 @@ extern "C" {
 #include <stdint.h>
 #include <stdbool.h>
 
-#define USE_MONITOR 1
-#define MONITOR_HOR_RES 640
-#define MONITOR_VER_RES 480
-#define LV_COLOR_DEPTH 32
-
-#if USE_MONITOR
-
 // #include "lvgl/lv_misc/uint32.h"
 
 /*********************
@@ -47,12 +40,12 @@ void monitor_flush(int32_t x1, int32_t y1, int32_t x2, int32_t y2, const uint32_
 void monitor_fill(int32_t x1, int32_t y1, int32_t x2, int32_t y2, uint32_t color);
 void monitor_map(int32_t x1, int32_t y1, int32_t x2, int32_t y2, const uint32_t * color_p);
 void monitor_flush_without_alpha(int32_t x1, int32_t y1, int32_t x2, int32_t y2, const uint8_t * color_p);
+uint32_t monitor_hor_pixel(void);
+uint32_t monitor_ver_pixel(void);
 
 /**********************
  *      MACROS
  **********************/
-
-#endif /* USE_MONITOR */
 
 #ifdef __cplusplus
 } /* extern "C" */

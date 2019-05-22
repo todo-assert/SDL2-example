@@ -101,7 +101,7 @@ void monitor_flush_ready (void)
 void monitor_flush(int32_t x1, int32_t y1, int32_t x2, int32_t y2, const uint32_t * color_p)
 {
     /*Return if the area is out the screen*/
-    if(x2 < 0 || y2 < 0 || x1 > monitor_data->hor_pixel - 1 || y1 > MONITOR_VER_RES - 1) {
+    if(x2 < 0 || y2 < 0 || x1 > monitor_data->hor_pixel - 1 || y1 > monitor_data->ver_pixel - 1) {
         monitor_flush_ready();
         return;
     }
@@ -130,7 +130,7 @@ void monitor_flush(int32_t x1, int32_t y1, int32_t x2, int32_t y2, const uint32_
 void monitor_flush_without_alpha(int32_t x1, int32_t y1, int32_t x2, int32_t y2, const uint8_t * color_p)
 {
     /*Return if the area is out the screen*/
-    if(x2 < 0 || y2 < 0 || x1 > monitor_data->hor_pixel - 1 || y1 > MONITOR_VER_RES - 1) {
+    if(x2 < 0 || y2 < 0 || x1 > monitor_data->hor_pixel - 1 || y1 > monitor_data->ver_pixel - 1) {
         monitor_flush_ready();
         return;
     }
@@ -146,7 +146,7 @@ void monitor_flush_without_alpha(int32_t x1, int32_t y1, int32_t x2, int32_t y2,
 			pixel[4*i + 1] = color_p[3*i + 1]; 
 			pixel[4*i + 0] = color_p[3*i + 2]; 
 		}	
-        color_p += w;
+        color_p += w*3;
     }
 
     sdl_refr_qry = true;
