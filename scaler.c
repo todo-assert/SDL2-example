@@ -87,6 +87,8 @@ bool scaler_process(uint8_t *source, uint8_t **target, uint8_t components)
 	}
 	int h,w,i, offset, end, x, y;
 	uint8_t *set;
+	int32_t position;
+	uint32_t size = scaler->actual_width * scaler->actual_height * components;
 	if(scaler->display_width == scaler->virtual_width) {
 		offset = scaler->virtual_height - scaler->display_height;
 		offset /= 2;
@@ -120,7 +122,10 @@ bool scaler_process(uint8_t *source, uint8_t **target, uint8_t components)
 					x = h;
 					y = w - offset;
 				}
-				*set = source[(scaler->map_column[x] * scaler->actual_width  + scaler->map_row[y])*components + i];
+				position = (scaler->map_column[x] * scaler->actual_width  + scaler->map_row[y])*components + i;
+				if( position > 0 && position < size ) {
+					*set = source[position];
+				}
 			}
 		}
 	}
