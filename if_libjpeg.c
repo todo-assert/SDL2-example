@@ -58,27 +58,20 @@ int main_decompress(char *filename)
 
     while (cinfo.output_scanline < cinfo.output_height) 
     {
-		line = &buffer[cinfo.output_scanline*cinfo.output_components*cinfo.output_width];
+		line = &buffer[(cinfo.output_height - cinfo.output_scanline - 1)*cinfo.output_components*cinfo.output_width];
 		(void) jpeg_read_scanlines(&cinfo, &line, 1);
     }
 	// monitor_flush_without_alpha(0, 0, cinfo.output_width-1, cinfo.output_scanline-1, &buffer[0]);
 	
 	uint8_t *full_screen = NULL;
 	bool direction = cinfo.output_width > cinfo.output_height ? (virtual_hor >= virtual_ver) : (virtual_hor <= virtual_ver);
-	if( direction ) {
-		scaler_init(cinfo.output_width, cinfo.output_height, virtual_hor, virtual_ver, SCALER_AUTO_RATIO);
-	} else {
-		scaler_init(cinfo.output_width, cinfo.output_height, virtual_ver, virtual_hor, SCALER_FULL_SCREEN);
-	}
-	scaler_process(buffer, &full_screen, cinfo.output_components, direction);
-	int alpha = 0;
+	scaler_init(cinfo.output_width, cinfo.output_height, virtual_hor, virtual_ver, SCALER_AUTO_RATIO, direction);
+	scaler_process(buffer, &full_screen, cinfo.output_components);
+	int alpha = 0xff;
 	if( cinfo.output_components == 4 ) {
 		monitor_flush(0, 0, virtual_hor-1, virtual_ver-1, (const uint32_t *)&full_screen[0]);
 	} else if( cinfo.output_components == 3 ) {
-		for(alpha=0xf;alpha<0xff;alpha++) {
-			monitor_flush_without_alpha(0, 0, virtual_hor-1, virtual_ver-1, &full_screen[0], alpha);
-			usleep(10000);
-		}
+		monitor_flush_without_alpha(0, 0, virtual_hor-1, virtual_ver-1, &full_screen[0], alpha);
 	}
 	scaler_destroy();
 

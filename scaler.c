@@ -7,13 +7,19 @@
 
 static scaler_private_t scaler[1];
 
-bool scaler_init(uint32_t actual_width, uint32_t actual_height, uint32_t virtual_width, uint32_t virtual_height, uint32_t mode)
+bool scaler_init(uint32_t actual_width, uint32_t actual_height, uint32_t virtual_width, uint32_t virtual_height, uint32_t mode, uint32_t direction)
 {
     int i;
 	scaler->actual_width = actual_width;
 	scaler->actual_height = actual_height;
-	scaler->virtual_width = virtual_width;
-	scaler->virtual_height = virtual_height;
+	if( direction ) {
+		scaler->virtual_width = virtual_width;
+		scaler->virtual_height = virtual_height;
+	} else {
+		scaler->virtual_width = virtual_height;
+		scaler->virtual_height = virtual_width;
+	}
+	scaler->direction = direction;
 	switch(mode) {
 		case SCALER_AUTO_RATIO:
 			scaler->display_width = scaler->virtual_height * scaler->actual_width / scaler->actual_height;
@@ -66,7 +72,7 @@ bool scaler_init(uint32_t actual_width, uint32_t actual_height, uint32_t virtual
 		} \
 	}while(0)
 
-bool scaler_process(uint8_t *source, uint8_t **target, uint8_t components, bool direction)
+bool scaler_process(uint8_t *source, uint8_t **target, uint8_t components)
 {
 	CHECK_PRIVATE();
 	if( source == NULL ) {
@@ -80,6 +86,7 @@ bool scaler_process(uint8_t *source, uint8_t **target, uint8_t components, bool 
 		}
 	}
 	int h,w,i, offset, end, x, y;
+	uint8_t *set;
 	if(scaler->display_width == scaler->virtual_width) {
 		offset = scaler->virtual_height - scaler->display_height;
 		offset /= 2;
@@ -93,26 +100,27 @@ bool scaler_process(uint8_t *source, uint8_t **target, uint8_t components, bool 
 	for(h=0;h<scaler->virtual_height;h++) {
 		for(w=0;w<scaler->virtual_width;w++) {
 			for(i=0;i<components;i++) {
+				if( scaler->direction ) {
+					set = &(*target)[(h*scaler->virtual_width+w)*components + i];
+				} else {
+					set = &(*target)[(w*scaler->virtual_height+h)*components + i];
+				}
 				if(scaler->display_width == scaler->virtual_width) {
 					if( h >= end || h <= offset ) {
-						(*target)[(h*scaler->virtual_width+w)*components + i] = 0x00;
+						*set = 0;
 						continue;
 					}
 					x = h - offset;
 					y = w;
 				} else {
 					if( w >= end || w <= offset ) {
-						(*target)[(h*scaler->virtual_width+w)*components + i] = 0x00;
+						*set = 0;
 						continue;
 					}
 					x = h;
 					y = w - offset;
 				}
-				if( direction ) {
-					(*target)[(h*scaler->virtual_width+w)*components + i] = source[(scaler->map_column[x] * scaler->actual_width  + scaler->map_row[y])*components + i];
-				} else {
-					(*target)[(w*scaler->virtual_height+h)*components + i] = source[(scaler->map_column[x] * scaler->actual_width  + scaler->map_row[y])*components + i];
-				}
+				*set = source[(scaler->map_column[x] * scaler->actual_width  + scaler->map_row[y])*components + i];
 			}
 		}
 	}
