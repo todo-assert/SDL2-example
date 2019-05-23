@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdbool.h>
+#ifdef CONFIG_PC_SIMULATOR
 #include <SDL2/SDL.h>
+#endif /* CONFIG_PC_SIMULATOR */
 #include <monitor.h>
 #include <if_libjpeg.h>
 #include <file.h>

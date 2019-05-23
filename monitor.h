@@ -29,6 +29,9 @@ typedef struct {
 	uint32_t hor_pixel;
 	uint32_t ver_pixel;
 	uint32_t *framebuffer;
+#ifndef CONFIG_PC_SIMULATOR
+	int fd;
+#endif /* ! CONFIG_PC_SIMULATOR */
 	char *name;
 }sdl_monitor_t;
  

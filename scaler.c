@@ -54,10 +54,10 @@ bool scaler_process(uint8_t *source, uint8_t **target, uint8_t components, bool 
 	if( *target == NULL ) {
 		*target = malloc(scaler->virtual_width*scaler->virtual_height*components);
 	}
-	
-	for(int h=0;h<scaler->virtual_height;h++) {
-		for(int w=0;w<scaler->virtual_width;w++) {
-			for(int i=0;i<components;i++) {
+	int h,w,i;
+	for(h=0;h<scaler->virtual_height;h++) {
+		for(w=0;w<scaler->virtual_width;w++) {
+			for(i=0;i<components;i++) {
 				if( direction ) {
 					(*target)[(h*scaler->virtual_width+w)*components + i] = source[(scaler->map_column[h] * scaler->actual_width  + scaler->map_row[w])*components + i];
 				} else {

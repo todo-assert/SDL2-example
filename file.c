@@ -22,9 +22,10 @@ bool file_add_list (char *name)
 		list->prev = list->next = list;
 		file->count = 1;
 	} else {
-		list->prev = file->list->prev;
 		list->next = file->list;
-		list->prev->next = list;
+		list->prev = file->list->prev;
+		file->list->prev->next = list;
+		file->list->prev = list;
 		file->count ++;
 	}
 	
