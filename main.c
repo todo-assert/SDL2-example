@@ -8,7 +8,7 @@
 #include <file.h>
 
 #define DISPLAY_HOR_PIXEL 480
-#define DISPLAY_VER_PIXEL 272
+#define DISPLAY_VER_PIXEL 480
 
 int main (int argc, char **argv)
 {

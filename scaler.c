@@ -7,33 +7,54 @@
 
 static scaler_private_t scaler[1];
 
-bool scaler_init(uint32_t actual_width, uint32_t actual_height, uint32_t virtual_width, uint32_t virtual_height)
+bool scaler_init(uint32_t actual_width, uint32_t actual_height, uint32_t virtual_width, uint32_t virtual_height, uint32_t mode)
 {
     int i;
 	scaler->actual_width = actual_width;
 	scaler->actual_height = actual_height;
 	scaler->virtual_width = virtual_width;
 	scaler->virtual_height = virtual_height;
+	switch(mode) {
+		case SCALER_AUTO_RATIO:
+			scaler->display_width = scaler->virtual_height * scaler->actual_width / scaler->actual_height;
+			if( scaler->display_width <= scaler->virtual_width) {
+				scaler->display_height = scaler->virtual_height;
+			} else {
+				scaler->display_height = scaler->virtual_width * scaler->actual_height / scaler->actual_width;
+				if( scaler->display_height <= scaler->virtual_height) {
+					scaler->display_width = scaler->virtual_width;
+				}
+			}
+		break;
+		case SCALER_FULL_SCREEN:
+			scaler->display_width = scaler->virtual_width;
+			scaler->display_height = scaler->virtual_height;
+		break;
+		default:
+			scaler->display_width = scaler->virtual_width;
+			scaler->display_height = scaler->virtual_height;
+		break;
+	}
 	
-    scaler->map_row = (uint32_t *)malloc(sizeof(uint32_t) * virtual_width);
+    scaler->map_row = (uint32_t *)malloc(sizeof(uint32_t) * scaler->display_width);
     if(NULL == scaler->map_row)
     {
         printf("make map_row error\n");
         return false;
     }
-    for(i=0; i<virtual_width; i++)
+    for(i=0; i<scaler->display_width; i++)
     {
-        scaler->map_row[i] = (i+0.4999999)*actual_width/virtual_width-0.5;
+        scaler->map_row[i] = (i+0.4999999)*actual_width/scaler->display_width-0.5;
     }
-    scaler->map_column = (uint32_t *)malloc(sizeof(uint32_t) * virtual_height);
+    scaler->map_column = (uint32_t *)malloc(sizeof(uint32_t) * scaler->display_height);
     if(NULL == scaler->map_column)
     {
         printf("make map_column error\n");
         return false;
     }
-    for(i=0; i<virtual_height; i++)
+    for(i=0; i<scaler->display_height; i++)
     {
-        scaler->map_column[i] = (i+0.4999999)*actual_height/virtual_height-0.5;
+        scaler->map_column[i] = (i+0.4999999)*actual_height/scaler->display_height-0.5;
     }
     return true;
 }
@@ -54,14 +75,39 @@ bool scaler_process(uint8_t *source, uint8_t **target, uint8_t components, bool 
 	if( *target == NULL ) {
 		*target = malloc(scaler->virtual_width*scaler->virtual_height*components);
 	}
-	int h,w,i;
+	int h,w,i, offset, end, x, y;
+	if(scaler->display_width == scaler->virtual_width) {
+		offset = scaler->virtual_height - scaler->display_height;
+		offset /= 2;
+		end = scaler->virtual_height - offset;
+	} else {
+		offset = scaler->virtual_width - scaler->display_width;
+		offset /= 2;
+		end = scaler->virtual_width - offset;
+	}
+	
 	for(h=0;h<scaler->virtual_height;h++) {
 		for(w=0;w<scaler->virtual_width;w++) {
 			for(i=0;i<components;i++) {
-				if( direction ) {
-					(*target)[(h*scaler->virtual_width+w)*components + i] = source[(scaler->map_column[h] * scaler->actual_width  + scaler->map_row[w])*components + i];
+				if(scaler->display_width == scaler->virtual_width) {
+					if( h >= end || h <= offset ) {
+						(*target)[(h*scaler->virtual_width+w)*components + i] = 0x00;
+						continue;
+					}
+					x = h - offset;
+					y = w;
 				} else {
-					(*target)[(w*scaler->virtual_height+h)*components + i] = source[(scaler->map_column[h] * scaler->actual_width  + scaler->map_row[w])*components + i];
+					if( w >= end || w <= offset ) {
+						(*target)[(h*scaler->virtual_width+w)*components + i] = 0x00;
+						continue;
+					}
+					x = h;
+					y = w - offset;
+				}
+				if( direction ) {
+					(*target)[(h*scaler->virtual_width+w)*components + i] = source[(scaler->map_column[x] * scaler->actual_width  + scaler->map_row[y])*components + i];
+				} else {
+					(*target)[(w*scaler->virtual_height+h)*components + i] = source[(scaler->map_column[x] * scaler->actual_width  + scaler->map_row[y])*components + i];
 				}
 			}
 		}
