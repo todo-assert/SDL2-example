@@ -71,7 +71,7 @@ bool monitor_init(uint32_t width, uint32_t height, char *name)
 	// monitor_data->framebuffer = (uint32_t *)malloc(width * height * sizeof(uint32_t));
 	if( monitor_data->framebuffer ) {
 		ret = true;
-		memset(monitor_data->framebuffer, 0x00, width * height * sizeof(uint32_t));
+		memset(monitor_data->framebuffer, 0x00, monitor_data->hor_pixel * monitor_data->ver_pixel * sizeof(uint32_t));
 	} else {
 		return ret;
 	}

@@ -74,6 +74,10 @@ bool scaler_process(uint8_t *source, uint8_t **target, uint8_t components, bool 
 	}
 	if( *target == NULL ) {
 		*target = malloc(scaler->virtual_width*scaler->virtual_height*components);
+		if( *target == NULL ) {
+			printf("error :%s:%d\n", __FILE__, __LINE__);
+			return false;
+		}
 	}
 	int h,w,i, offset, end, x, y;
 	if(scaler->display_width == scaler->virtual_width) {
