@@ -72,8 +72,8 @@ bool monitor_init(uint32_t width, uint32_t height, char *name)
 	} else 
 		return ret;
 
-    SDL_CreateThread(monitor_sdl_refr_thread, "sdl_refr", NULL);
-    while(sdl_inited == false); /*Wait until 'sdl_refr' initializes the SDL*/
+	SDL_CreateThread(monitor_sdl_refr_thread, "sdl_refr", NULL);
+	while(sdl_inited == false); /*Wait until 'sdl_refr' initializes the SDL*/
 	return ret;
 }
 
@@ -136,16 +136,16 @@ void monitor_flush_without_alpha(int32_t x1, int32_t y1, int32_t x2, int32_t y2,
     }
 
     int32_t y;
-	uint8_t *pixel;
+    uint8_t *pixel;
     uint32_t w = x2 - x1 + 1;
     for(y = y1; y <= y2; y++) {
-		for(int i=0;i<w;i++) {
-			pixel = (uint8_t *)&monitor_data->framebuffer[y * monitor_data->hor_pixel + x1];
-			pixel[4*i + 3] = alpha; 
-			pixel[4*i + 2] = color_p[3*i + 0]; 
-			pixel[4*i + 1] = color_p[3*i + 1]; 
-			pixel[4*i + 0] = color_p[3*i + 2]; 
-		}	
+        for(int i=0;i<w;i++) {
+            pixel = (uint8_t *)&monitor_data->framebuffer[y * monitor_data->hor_pixel + x1];
+            pixel[4*i + 3] = alpha; 
+            pixel[4*i + 2] = color_p[3*i + 0]; 
+            pixel[4*i + 1] = color_p[3*i + 1]; 
+            pixel[4*i + 0] = color_p[3*i + 2]; 
+        }	
         color_p += w*3;
     }
 
@@ -240,7 +240,7 @@ static int monitor_sdl_refr_thread(void * param)
 {
     (void)param;
 
-	monitor_sdl_init();
+    monitor_sdl_init();
     /*Run until quit event not arrives*/
     while(sdl_quit_qry == false) {
         /*Refresh handling*/

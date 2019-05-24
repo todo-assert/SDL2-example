@@ -136,9 +136,9 @@ void monitor_flush_without_alpha(int32_t x1, int32_t y1, int32_t x2, int32_t y2,
     }
 
     int32_t y;
-	uint8_t *pixel;
+    uint8_t *pixel;
     uint32_t w = x2 - x1 + 1;
-	int i;
+    int i;
     for(y = y1; y <= y2; y++) {
 		for(i=0;i<w;i++) {
 			pixel = (uint8_t *)&monitor_data->framebuffer[y * monitor_data->hor_pixel + x1];

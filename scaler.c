@@ -9,7 +9,7 @@ static scaler_private_t scaler[1];
 
 bool scaler_init(uint32_t actual_width, uint32_t actual_height, uint32_t virtual_width, uint32_t virtual_height, uint32_t mode, uint32_t direction)
 {
-    int i;
+	int i;
 	scaler->actual_width = actual_width;
 	scaler->actual_height = actual_height;
 	if( direction == SCALER_ROTATE_0 || direction == SCALER_ROTATE_180 ) {
