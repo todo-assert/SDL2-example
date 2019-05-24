@@ -12,7 +12,7 @@ bool scaler_init(uint32_t actual_width, uint32_t actual_height, uint32_t virtual
     int i;
 	scaler->actual_width = actual_width;
 	scaler->actual_height = actual_height;
-	if( direction ) {
+	if( direction == SCALER_ROTATE_0 || direction == SCALER_ROTATE_180 ) {
 		scaler->virtual_width = virtual_width;
 		scaler->virtual_height = virtual_height;
 	} else {
@@ -102,10 +102,14 @@ bool scaler_process(uint8_t *source, uint8_t **target, uint8_t components)
 	for(h=0;h<scaler->virtual_height;h++) {
 		for(w=0;w<scaler->virtual_width;w++) {
 			for(i=0;i<components;i++) {
-				if( scaler->direction ) {
+				if( scaler->direction == SCALER_ROTATE_90 ) {
+					set = &(*target)[(w*scaler->virtual_height+(scaler->virtual_height - h - 1))*components + i];
+				} else if( scaler->direction == SCALER_ROTATE_0 )  {
 					set = &(*target)[(h*scaler->virtual_width+w)*components + i];
-				} else {
-					set = &(*target)[(w*scaler->virtual_height+h)*components + i];
+				} else if( scaler->direction == SCALER_ROTATE_180 )  {
+					set = &(*target)[((scaler->virtual_height - h - 1)*scaler->virtual_width+(scaler->virtual_width - w - 1))*components + i];
+				} else /* if( scaler->direction == 3 ) */  {
+					set = &(*target)[((scaler->virtual_width - w - 1)*scaler->virtual_height+h)*components + i];
 				}
 				if(scaler->display_width == scaler->virtual_width) {
 					if( h >= end || h <= offset ) {

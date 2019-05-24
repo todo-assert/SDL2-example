@@ -58,14 +58,14 @@ int main_decompress(char *filename)
 
     while (cinfo.output_scanline < cinfo.output_height) 
     {
-		line = &buffer[(cinfo.output_height - cinfo.output_scanline - 1)*cinfo.output_components*cinfo.output_width];
+		line = &buffer[(cinfo.output_scanline)*cinfo.output_components*cinfo.output_width];
 		(void) jpeg_read_scanlines(&cinfo, &line, 1);
     }
 	// monitor_flush_without_alpha(0, 0, cinfo.output_width-1, cinfo.output_scanline-1, &buffer[0]);
 	
 	uint8_t *full_screen = NULL;
 	bool direction = cinfo.output_width > cinfo.output_height ? (virtual_hor >= virtual_ver) : (virtual_hor <= virtual_ver);
-	scaler_init(cinfo.output_width, cinfo.output_height, virtual_hor, virtual_ver, SCALER_AUTO_RATIO, direction);
+	scaler_init(cinfo.output_width, cinfo.output_height, virtual_hor, virtual_ver, SCALER_AUTO_RATIO, direction?SCALER_ROTATE_0:SCALER_ROTATE_270);
 	scaler_process(buffer, &full_screen, cinfo.output_components);
 	int alpha = 0xff;
 	if( cinfo.output_components == 4 ) {
