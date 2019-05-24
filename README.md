@@ -11,7 +11,7 @@
 
 🤣编译后执行 ./jpeg-example < jpeg 路径 >
 
-🤣
+🤣增加 scaler 旋转 0° - 270°
 
 😳​ assert 制作
 
